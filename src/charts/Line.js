@@ -410,6 +410,10 @@ class Line {
             seriesNumber: realIndex,
             i: i
           })
+
+          elSeries.attr({
+            fill: `url(#${lineFill.node.id})`
+          })
         } else {
           lineFill = w.globals.stroke.colors[realIndex]
         }

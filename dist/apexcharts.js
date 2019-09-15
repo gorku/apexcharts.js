@@ -1422,6 +1422,12 @@
           } else if (style === 'diagonal2') {
             g.from(0, 1).to(2, 2);
           }
+
+          g.attr({
+            x2: '100%',
+            y2: '100%',
+            gradientUnits: 'userSpaceOnUse'
+          });
         } else {
           var offx = w.globals.gridWidth / 2;
           var offy = w.globals.gridHeight / 2;
@@ -1539,7 +1545,7 @@
             'stroke-opacity': opts.pointStrokeOpacity ? opts.pointStrokeOpacity : 1
           });
           elPoint = p;
-        } else if (opts.shape === 'circle') {
+        } else if (opts.shape === 'circle' || !opts.shape) {
           if (!Utils.isNumber(y)) {
             size = 0;
             y = 0;
@@ -6105,7 +6111,7 @@
         });
 
         if (w.config.dataLabels.enabled) {
-          if (this.totalItems > w.config.plotOptions.bar.dataLabels.maxItems) {
+          if (this.totalItems > this.barOptions.dataLabels.maxItems) {
             console.warn('WARNING: DataLabels are enabled but there are too many to display. This may cause performance issue when rendering.');
           }
         }
@@ -6953,7 +6959,7 @@
             x: x,
             y: y,
             text: text,
-            i: i,
+            i: this.barOptions.distributed ? j : i,
             j: j,
             parent: elDataLabelsWrap,
             dataLabelsConfig: modifiedDataLabelsConfig,
@@ -12523,6 +12529,9 @@
               lineFill = fill.fillPath({
                 seriesNumber: realIndex,
                 i: i
+              });
+              elSeries.attr({
+                fill: "url(#".concat(lineFill.node.id, ")")
               });
             } else {
               lineFill = w.globals.stroke.colors[realIndex];
@@ -19600,6 +19609,7 @@
     }, {
       key: "zoomUpdateOptions",
       value: function zoomUpdateOptions(newMinX, newMaxX) {
+        var w = this.w;
         var xaxis = {
           min: newMinX,
           max: newMaxX
@@ -19610,13 +19620,29 @@
           xaxis = beforeZoomRange.xaxis;
         }
 
+        var options = {
+          xaxis: xaxis
+        };
+        var yaxis = Utils.clone(w.globals.initialConfig.yaxis);
+
+        if (w.config.chart.zoom.autoScaleYaxis) {
+          var scale = new Range(this.ctx);
+          yaxis = scale.autoScaleY(this.ctx, yaxis, {
+            xaxis: xaxis
+          });
+        }
+
+        if (!w.config.chart.group) {
+          // if chart in a group, prevent yaxis update here
+          // fix issue #650
+          options.yaxis = yaxis;
+        }
+
         this.w.globals.zoomed = true;
 
-        this.ctx._updateOptions({
-          xaxis: xaxis
-        }, false, this.w.config.chart.animations.dynamicAnimation.enabled);
+        this.ctx._updateOptions(options, false, this.w.config.chart.animations.dynamicAnimation.enabled);
 
-        this.zoomCallback(xaxis);
+        this.zoomCallback(xaxis, yaxis);
       }
     }, {
       key: "zoomCallback",
@@ -28105,8 +28131,9 @@
 
         this.formatters.setLabelFormatters();
         this.titleSubtitle.draw(); // legend is calculated here before coreCalculations because it affects the plottable area
+        // if there is some data to show or user collapsed all series, then proceed drawing legend
 
-        if (!w.globals.noData) {
+        if (!gl.noData || gl.collapsedSeries.length === gl.series.length) {
           this.legend.init();
         } // check whether in multiple series, all series share the same X
 

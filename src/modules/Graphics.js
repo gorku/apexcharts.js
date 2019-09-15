@@ -414,6 +414,12 @@ class Graphics {
       } else if (style === 'diagonal2') {
         g.from(0, 1).to(2, 2)
       }
+
+      g.attr({
+        x2: '100%',
+        y2: '100%',
+        gradientUnits: 'userSpaceOnUse'
+      })
     } else {
       let offx = w.globals.gridWidth / 2
       let offy = w.globals.gridHeight / 2
