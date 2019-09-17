@@ -1414,7 +1414,7 @@
 
         if (!radial) {
           if (style === 'vertical') {
-            g.from(0, 0).to(0, 1);
+            g.from(0, 0).to(0, '100%');
           } else if (style === 'diagonal') {
             g.from(0, 0).to(1, 1);
           } else if (style === 'horizontal') {
@@ -1424,8 +1424,6 @@
           }
 
           g.attr({
-            x2: '100%',
-            y2: '100%',
             gradientUnits: 'userSpaceOnUse'
           });
         } else {
