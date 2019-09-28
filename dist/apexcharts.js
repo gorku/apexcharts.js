@@ -27995,10 +27995,12 @@
               beforeMount(_this, _this.w);
             }
 
-            _this.fireEvent('beforeMount', [_this, _this.w]);
+            _this.fireEvent('beforeMount', [_this, _this.w]); // window.addEventListener('resize', this.windowResizeHandler)
+            // window.addResizeListener(
+            //   this.el.parentNode,
+            //   this.parentResizeCallback.bind(this)
+            // )
 
-            window.addEventListener('resize', _this.windowResizeHandler);
-            window.addResizeListener(_this.el.parentNode, _this.parentResizeCallback.bind(_this));
 
             var graphData = _this.create(_this.w.config.series, {});
 
@@ -28695,10 +28697,12 @@
               Apex._chartInstances.splice(i, 1);
             }
           });
-        }
+        } // window.removeEventListener('resize', this.windowResizeHandler)
+        // window.removeResizeListener(
+        //   this.el.parentNode,
+        //   this.parentResizeCallback.bind(this)
+        // )
 
-        window.removeEventListener('resize', this.windowResizeHandler);
-        window.removeResizeListener(this.el.parentNode, this.parentResizeCallback.bind(this));
       }
       /**
        * Allows the user to provide data attrs in the element and the chart will render automatically when this method is called by searching for the elements containing 'data-apexcharts' attribute

@@ -105,11 +105,11 @@ export default class ApexCharts {
         }
 
         this.fireEvent('beforeMount', [this, this.w])
-        window.addEventListener('resize', this.windowResizeHandler)
-        window.addResizeListener(
-          this.el.parentNode,
-          this.parentResizeCallback.bind(this)
-        )
+        // window.addEventListener('resize', this.windowResizeHandler)
+        // window.addResizeListener(
+        //   this.el.parentNode,
+        //   this.parentResizeCallback.bind(this)
+        // )
 
         let graphData = this.create(this.w.config.series, {})
         if (!graphData) return resolve(this)
@@ -806,12 +806,12 @@ export default class ApexCharts {
         }
       })
     }
-    window.removeEventListener('resize', this.windowResizeHandler)
+    // window.removeEventListener('resize', this.windowResizeHandler)
 
-    window.removeResizeListener(
-      this.el.parentNode,
-      this.parentResizeCallback.bind(this)
-    )
+    // window.removeResizeListener(
+    //   this.el.parentNode,
+    //   this.parentResizeCallback.bind(this)
+    // )
   }
 
   /**
