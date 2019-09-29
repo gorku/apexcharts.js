@@ -15782,6 +15782,16 @@
                 yaxis = scale.autoScaleY(targetChart, yaxis, e);
               }
 
+              if (w.config.chart.events.onSelection) {
+                w.config.chart.events.onSelection({
+                  xaxis: {
+                    min: e.xaxis.min,
+                    max: e.xaxis.max
+                  },
+                  yaxis: {}
+                });
+              }
+
               targetChart._updateOptions({
                 xaxis: {
                   min: e.xaxis.min,
